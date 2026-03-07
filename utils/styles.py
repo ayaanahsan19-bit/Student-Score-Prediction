@@ -128,11 +128,12 @@ html, body, [class*="css"] {
 .status-ready   { background: #d1fae5; color: #065f46; border-radius: 8px; padding: 0.5rem 1.1rem; font-size: 0.9rem; font-weight: 500; display: inline-block; }
 .status-warning { background: #fef3c7; color: #92400e; border-radius: 8px; padding: 0.5rem 1.1rem; font-size: 0.9rem; font-weight: 500; display: inline-block; }
 
-/* ── Hide Streamlit chrome ── */
-#MainMenu       { visibility: hidden; }
-footer          { visibility: hidden; }
-header          { visibility: hidden; }
-.stDeployButton { display: none; }
+/* ── Hide Streamlit chrome (keep sidebar toggle visible) ── */
+#MainMenu                        { visibility: hidden; }
+footer                           { visibility: hidden; }
+[data-testid="stToolbar"]        { visibility: hidden; }
+[data-testid="stDeployButton"]   { display: none; }
+.stDeployButton                  { display: none; }
 """
 
 
@@ -155,6 +156,42 @@ def section_title(text: str):
 
 def insight_box(text: str):
     st.markdown(f'<div class="insight-box">💡 {text}</div>', unsafe_allow_html=True)
+
+
+def sidebar_nav(active: str = ""):
+    """Render a branded sidebar header + page navigation links on every page."""
+    with st.sidebar:
+        st.markdown(
+            '<div style="text-align:center;padding:1rem 0 0.5rem;">'
+            '<span style="font-size:2rem;">🎓</span><br>'
+            '<span style="font-weight:700;font-size:1rem;color:#1e293b;">EduPredict AI</span><br>'
+            '<span style="font-size:0.72rem;color:#94a3b8;">Student Score Prediction</span>'
+            '</div>',
+            unsafe_allow_html=True,
+        )
+        st.markdown("---")
+        nav_items = [
+            ("🏠", "Home",                 "/"),
+            ("📊", "Prediction Dashboard", "/1_📊_Dashboard"),
+            ("📈", "Data Analytics",       "/2_📈_Analytics"),
+            ("⚙️", "Model Comparison",     "/3_⚙️_Model_Details"),
+            ("🧠", "SHAP Explainability",  "/4_Explainability"),
+        ]
+        for icon, label, _ in nav_items:
+            is_active = label == active
+            bg    = "#ede9fe" if is_active else "transparent"
+            fw    = "600"     if is_active else "400"
+            color = "#5b21b6" if is_active else "#475569"
+            st.markdown(
+                f'<div style="padding:0.45rem 0.75rem;border-radius:8px;'
+                f'background:{bg};margin-bottom:0.2rem;">'
+                f'<span style="font-size:1rem;">{icon}</span> '
+                f'<span style="font-size:0.88rem;font-weight:{fw};color:{color};">{label}</span>'
+                f'</div>',
+                unsafe_allow_html=True,
+            )
+        st.markdown("---")
+        st.caption("v2.0 · Elevo Internship")
 
 
 def metric_card(value, label):

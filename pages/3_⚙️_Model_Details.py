@@ -6,10 +6,12 @@ import plotly.graph_objects as go
 import plotly.express as px
 from utils.preprocessing import load_and_clean_data
 from sklearn.model_selection import train_test_split
-from utils.styles import apply_theme, page_header, section_title, insight_box
+from utils.styles import apply_theme, page_header, section_title, insight_box, sidebar_nav
 
-st.set_page_config(page_title="Model Comparison", page_icon="⚙️", layout="wide")
+st.set_page_config(page_title="Model Comparison", page_icon="⚙️", layout="wide",
+                   initial_sidebar_state="expanded")
 apply_theme()
+sidebar_nav("Model Comparison")
 page_header("⚙️ Model Performance & Comparison",
             "Evaluate all trained models side-by-side with residual diagnostics")
 

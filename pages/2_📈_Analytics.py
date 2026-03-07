@@ -4,10 +4,12 @@ import numpy as np
 import plotly.graph_objects as go
 import plotly.express as px
 from utils.preprocessing import load_and_clean_data
-from utils.styles import apply_theme, page_header, section_title, insight_box
+from utils.styles import apply_theme, page_header, section_title, insight_box, sidebar_nav
 
-st.set_page_config(page_title="Data Analytics", page_icon="📈", layout="wide")
+st.set_page_config(page_title="Data Analytics", page_icon="📈", layout="wide",
+                   initial_sidebar_state="expanded")
 apply_theme()
+sidebar_nav("Data Analytics")
 page_header("📈 Exploratory Data Analysis",
             "Deep dive into the Student Performance dataset")
 

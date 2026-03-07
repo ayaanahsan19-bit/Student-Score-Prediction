@@ -2,7 +2,7 @@ import streamlit as st
 import os
 import json
 
-from utils.styles import apply_theme
+from utils.styles import apply_theme, sidebar_nav
 
 st.set_page_config(
     page_title="EduPredict AI — Student Score Prediction",
@@ -11,6 +11,7 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 apply_theme()
+sidebar_nav("Home")
 
 # ── Hero banner ───────────────────────────────────────────────────────────────
 st.markdown("""

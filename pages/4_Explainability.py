@@ -8,10 +8,12 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 from utils.preprocessing import load_and_clean_data
-from utils.styles import apply_theme, page_header, section_title, insight_box
+from utils.styles import apply_theme, page_header, section_title, insight_box, sidebar_nav
 
-st.set_page_config(page_title="SHAP Explainability", page_icon="🧠", layout="wide")
+st.set_page_config(page_title="SHAP Explainability", page_icon="🧠", layout="wide",
+                   initial_sidebar_state="expanded")
 apply_theme()
+sidebar_nav("SHAP Explainability")
 page_header("🧠 Model Explainability (SHAP)",
             "Understand why the model makes each prediction using SHAP values")
 

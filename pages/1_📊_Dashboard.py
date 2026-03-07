@@ -5,10 +5,12 @@ import joblib
 import plotly.graph_objects as go
 import plotly.express as px
 from utils.preprocessing import load_and_clean_data
-from utils.styles import apply_theme, page_header, section_title, insight_box
+from utils.styles import apply_theme, page_header, section_title, insight_box, sidebar_nav
 
-st.set_page_config(page_title="Prediction Dashboard", page_icon="📊", layout="wide")
+st.set_page_config(page_title="Prediction Dashboard", page_icon="📊", layout="wide",
+                   initial_sidebar_state="expanded")
 apply_theme()
+sidebar_nav("Prediction Dashboard")
 page_header("📊 Prediction Dashboard",
             "Adjust the sliders and get a real-time exam score prediction powered by XGBoost")
 
