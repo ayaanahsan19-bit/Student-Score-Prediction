@@ -1,4 +1,5 @@
 import streamlit as st
+import streamlit.components.v1 as _components
 
 # ── Shared CSS theme ──────────────────────────────────────────────────────────
 _CSS = """
@@ -128,36 +129,7 @@ html, body, [class*="css"] {
 .status-ready   { background: #d1fae5; color: #065f46; border-radius: 8px; padding: 0.5rem 1.1rem; font-size: 0.9rem; font-weight: 500; display: inline-block; }
 .status-warning { background: #fef3c7; color: #92400e; border-radius: 8px; padding: 0.5rem 1.1rem; font-size: 0.9rem; font-weight: 500; display: inline-block; }
 
-/* ── Sidebar collapse/expand arrow — always visible, always on top ── */
-[data-testid="collapsedControl"] {
-    display:    flex       !important;
-    visibility: visible    !important;
-    opacity:    1          !important;
-    position:   fixed      !important;
-    top:        50%        !important;
-    left:       0          !important;
-    transform:  translateY(-50%) !important;
-    z-index:    99999      !important;
-    background: #6366f1    !important;
-    border-radius: 0 8px 8px 0 !important;
-    box-shadow: 2px 0 12px rgba(99,102,241,0.35) !important;
-    padding:    0.5rem 0.35rem !important;
-    cursor:     pointer    !important;
-    transition: background 0.2s !important;
-}
-[data-testid="collapsedControl"]:hover {
-    background: #4f46e5 !important;
-}
-[data-testid="collapsedControl"] svg {
-    fill: white !important;
-    stroke: white !important;
-    color: white !important;
-}
-
-/* ── Sidebar nav links ── */
-[data-testid="stSidebarNav"]       { display: block !important; }
-
-/* ── Style page_link nav buttons in sidebar ── */
+/* ── Sidebar nav link hover ── */
 [data-testid="stSidebar"] [data-testid="stPageLink"] {
     border-radius: 8px;
     transition: background 0.15s;
@@ -196,8 +168,71 @@ def insight_box(text: str):
     st.markdown(f'<div class="insight-box">💡 {text}</div>', unsafe_allow_html=True)
 
 
+def _inject_sidebar_fab():
+    """Inject a floating ☰ button via JS (iframe → window.parent DOM).
+    Always visible. One click opens the sidebar no matter its state."""
+    _components.html("""
+    <script>
+    (function() {
+        try {
+            var p = window.parent;
+            if (p.document.getElementById('__edu_sidebar_fab__')) return;
+            var btn = p.document.createElement('button');
+            btn.id    = '__edu_sidebar_fab__';
+            btn.title = 'Open / close navigation';
+            btn.innerHTML = '&#9776;';
+            btn.style.cssText = [
+                'position:fixed', 'top:50%', 'left:10px',
+                'transform:translateY(-50%)',
+                'z-index:2147483647',
+                'background:#6366f1', 'color:white',
+                'border:none', 'border-radius:50%',
+                'width:42px', 'height:42px',
+                'font-size:20px', 'line-height:1',
+                'cursor:pointer',
+                'box-shadow:0 4px 16px rgba(99,102,241,0.45)',
+                'transition:background 0.18s,transform 0.18s',
+                'display:flex', 'align-items:center', 'justify-content:center'
+            ].join(';');
+            btn.onmouseenter = function(){
+                btn.style.background = '#4f46e5';
+                btn.style.transform  = 'translateY(-50%) scale(1.12)';
+            };
+            btn.onmouseleave = function(){
+                btn.style.background = '#6366f1';
+                btn.style.transform  = 'translateY(-50%) scale(1)';
+            };
+            btn.onclick = function() {
+                // Try every known Streamlit toggle selector
+                var selectors = [
+                    '[data-testid="collapsedControl"] button',
+                    '[data-testid="collapsedControl"]',
+                    'button[aria-label="Open sidebar"]',
+                    'button[aria-label="Close sidebar"]',
+                    '[data-testid="stSidebar"] ~ div button',
+                ];
+                for (var i = 0; i < selectors.length; i++) {
+                    var el = p.document.querySelector(selectors[i]);
+                    if (el) { el.click(); return; }
+                }
+                // Last-resort: force sidebar visible directly
+                var sb = p.document.querySelector('[data-testid="stSidebar"]');
+                if (sb) {
+                    var cur = p.window.getComputedStyle(sb).display;
+                    sb.style.setProperty('display', cur === 'none' ? 'flex' : 'none', 'important');
+                    sb.style.setProperty('visibility', 'visible', 'important');
+                }
+            };
+            p.document.body.appendChild(btn);
+        } catch(e) { console.warn('EduPredict: sidebar fab error', e); }
+    })();
+    </script>
+    """, height=0, scrolling=False)
+
+
 def sidebar_nav(active: str = ""):
     """Render a branded sidebar header + native page navigation links."""
+    _inject_sidebar_fab()   # floating ☰ button always visible in corner
     with st.sidebar:
         # ── Branding ──────────────────────────────────────────────────────
         st.markdown(
