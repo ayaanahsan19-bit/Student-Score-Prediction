@@ -128,9 +128,33 @@ html, body, [class*="css"] {
 .status-ready   { background: #d1fae5; color: #065f46; border-radius: 8px; padding: 0.5rem 1.1rem; font-size: 0.9rem; font-weight: 500; display: inline-block; }
 .status-warning { background: #fef3c7; color: #92400e; border-radius: 8px; padding: 0.5rem 1.1rem; font-size: 0.9rem; font-weight: 500; display: inline-block; }
 
-/* ── Force sidebar to always be visible ── */
-section[data-testid="stSidebar"]   { display: flex !important; visibility: visible !important; }
-[data-testid="collapsedControl"]   { display: block !important; visibility: visible !important; }
+/* ── Sidebar collapse/expand arrow — always visible, always on top ── */
+[data-testid="collapsedControl"] {
+    display:    flex       !important;
+    visibility: visible    !important;
+    opacity:    1          !important;
+    position:   fixed      !important;
+    top:        50%        !important;
+    left:       0          !important;
+    transform:  translateY(-50%) !important;
+    z-index:    99999      !important;
+    background: #6366f1    !important;
+    border-radius: 0 8px 8px 0 !important;
+    box-shadow: 2px 0 12px rgba(99,102,241,0.35) !important;
+    padding:    0.5rem 0.35rem !important;
+    cursor:     pointer    !important;
+    transition: background 0.2s !important;
+}
+[data-testid="collapsedControl"]:hover {
+    background: #4f46e5 !important;
+}
+[data-testid="collapsedControl"] svg {
+    fill: white !important;
+    stroke: white !important;
+    color: white !important;
+}
+
+/* ── Sidebar nav links ── */
 [data-testid="stSidebarNav"]       { display: block !important; }
 
 /* ── Style page_link nav buttons in sidebar ── */
